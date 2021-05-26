@@ -1,9 +1,11 @@
 package simple
 
 import (
+	"bufio"
 	"encoding/json"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -36,6 +38,8 @@ func (k *Config) Load(path ...string) error {
 		return k.ParseYaml(b)
 	case ".json":
 		return k.ParseJson(b)
+	case ".properties":
+		return k.ParseProperties(b)
 	default:
 		return k.ParseJson(b)
 	}
@@ -56,6 +60,43 @@ func (k *Config) ParseJson(b []byte) error {
 func (k *Config) ParseYaml(b []byte) error {
 	err := yaml.NewDecoder(strings.NewReader(string(b))).Decode(&k.config)
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//ParseProperties parse properties file to map[string]interface
+//accept path to properties file and return error
+func (k *Config) ParseProperties(b []byte) error {
+	scanner := bufio.NewScanner(strings.NewReader(string(b)))
+	for scanner.Scan() {
+		line := scanner.Text()
+		if equal := strings.Index(line, "="); equal >= 0 {
+			if key := strings.TrimSpace(line[:equal]); len(key) > 0 {
+				value := ""
+				if len(line) > equal {
+					value = strings.TrimSpace(line[equal+1:])
+				}
+				keys := strings.Split(key, ".")
+				var r map[string]interface{}
+				tempMap := k.config
+				for i := 0; i < len(keys)-1; i++ {
+					var p interface{}
+					if _, ok := tempMap[keys[i]]; !ok {
+						p = make(map[string]interface{})
+					} else {
+						p = tempMap[keys[i]]
+					}
+					tempMap[keys[i]] = p
+					r = p.(map[string]interface{})
+				}
+				fkey := keys[len(keys)-1]
+				r[fkey] = value
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
 		return err
 	}
 	return nil

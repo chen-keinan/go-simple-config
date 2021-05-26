@@ -34,6 +34,13 @@ func TestConfig_LoadYml(t *testing.T) {
 	assert.Equal(t, c.GetValueString("SERVER.host"), "127.0.0.1")
 }
 
+func TestConfig_LoadProperties(t *testing.T) {
+	c := New()
+	err := c.Load("./fixture/config.default.properties")
+	assert.NoError(t, err)
+	assert.Equal(t, c.GetValueString("SERVER.host"), "127.0.0.1")
+}
+
 func TestConfig_LoadEnv(t *testing.T) {
 	err := os.Setenv("SERVER.host", "127.0.0.1")
 	assert.NoError(t, err)
