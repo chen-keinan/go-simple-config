@@ -1,0 +1,14 @@
+{
+  "SERVER": {
+    "host": "127.0.0.1",
+    "port": "8080",
+    "db_name": "name",
+    "user": "user",
+    "password": "password"
+  },
+  "PARAMS": {
+    "batch_size": "50",
+    "retention": 4,
+    "test": true
+  }
+}
