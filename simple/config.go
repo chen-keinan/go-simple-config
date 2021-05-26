@@ -3,6 +3,7 @@ package simple
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
@@ -37,17 +38,17 @@ func (k *Config) Load(path ...string) error {
 	case ".yaml", ".yml":
 		return k.ParseYaml(b)
 	case ".json":
-		return k.ParseJson(b)
+		return k.ParseJSON(b)
 	case ".properties":
 		return k.ParseProperties(b)
 	default:
-		return k.ParseJson(b)
+		return k.ParseJSON(b)
 	}
 }
 
-//ParseJson parse json file to map[string]interface
+//ParseJSON parse json file to map[string]interface
 //accept path to json file and return error
-func (k *Config) ParseJson(b []byte) error {
+func (k *Config) ParseJSON(b []byte) error {
 	err := json.NewDecoder(strings.NewReader(string(b))).Decode(&k.config)
 	if err != nil {
 		return err
@@ -80,15 +81,18 @@ func (k *Config) ParseProperties(b []byte) error {
 				keys := strings.Split(key, ".")
 				var r map[string]interface{}
 				tempMap := k.config
+				var p interface{}
 				for i := 0; i < len(keys)-1; i++ {
-					var p interface{}
 					if _, ok := tempMap[keys[i]]; !ok {
 						p = make(map[string]interface{})
 					} else {
 						p = tempMap[keys[i]]
 					}
 					tempMap[keys[i]] = p
-					r = p.(map[string]interface{})
+				}
+				r, ok := p.(map[string]interface{})
+				if !ok {
+					return fmt.Errorf("failed to parse properties file")
 				}
 				fkey := keys[len(keys)-1]
 				r[fkey] = value
@@ -109,12 +113,6 @@ func (k *Config) GetValueString(key string) string {
 		return v
 	}
 	return k.getValueFromConfig(key)
-}
-
-//getValueFromEnv return env value by key
-// accept key and return value
-func (k *Config) getValueFromEnv(key string) string {
-	return os.Getenv(key)
 }
 
 //getValueFromConfig return value by key from config file
