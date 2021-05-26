@@ -2,8 +2,10 @@ package simple
 
 import (
 	"encoding/json"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -32,26 +34,42 @@ type Config struct {
 
 //New return new config object
 func New() *Config {
-	return &Config{}
+	return &Config{config: make(map[string]interface{})}
 }
 
 //Load load config to Object
 // accept fs path
-func (k *Config) Load(path string) error {
-	b, err := ioutil.ReadFile(path)
+func (k *Config) Load(path ...string) error {
+	if len(path) == 0 {
+		return nil
+	}
+	b, err := ioutil.ReadFile(path[0])
 	if err != nil {
 		return err
 	}
-	return k.ParseJson(b)
+	fileExtension := filepath.Ext(path[0])
+	switch fileExtension {
+	case ".yaml", ".yml":
+		return k.ParseYaml(b)
+	case ".json":
+		return k.ParseJson(b)
+	default:
+		return k.ParseJson(b)
+	}
 }
 
 func (k *Config) ParseJson(b []byte) error {
-	var i map[string]interface{}
-	err := json.NewDecoder(strings.NewReader(string(b))).Decode(&i)
+	err := json.NewDecoder(strings.NewReader(string(b))).Decode(&k.config)
 	if err != nil {
 		return err
 	}
-	k.config = i
+	return nil
+}
+func (k *Config) ParseYaml(b []byte) error {
+	err := yaml.NewDecoder(strings.NewReader(string(b))).Decode(&k.config)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -82,6 +100,9 @@ func (k *Config) getValueFromConfig(key string) string {
 			}
 			if s, ok := v.(float64); ok {
 				return strconv.Itoa(int(s))
+			}
+			if s, ok := v.(bool); ok {
+				return strconv.FormatBool(s)
 			}
 		}
 	}

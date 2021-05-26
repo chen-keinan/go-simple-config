@@ -1,1 +1,1 @@
-# go-konfiguration
+# go-simple-config
