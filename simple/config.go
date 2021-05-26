@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -100,7 +99,6 @@ func (k *Config) ParseProperties(b []byte) error {
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
 		return err
 	}
 	return nil
