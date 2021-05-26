@@ -1,1 +1,1 @@
-# konfiguration
+# go-konfiguration
