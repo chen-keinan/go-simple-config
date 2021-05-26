@@ -8,5 +8,17 @@
 - json
 - properties
 - Environment variable
-  
 
+### usage example
+```
+func readConfig() error{
+    c := New()
+    err := c.Load("config.json")
+    
+    if err != nil {
+       return err
+     }	 
+     
+    fmt.Print(c.GetValueString("SERVER.host"))
+}
+```
