@@ -1,5 +1,5 @@
 # go-simple-config
-> Go Simple config is open source configuration lib for storing and accessing configuration data with no minimal external dependencies
+> Go Simple config is an open source configuration lib for storing and accessing configuration data with minimal dependencies
 >
 
 ### supported configuration files:
