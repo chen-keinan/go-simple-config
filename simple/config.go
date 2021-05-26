@@ -10,24 +10,7 @@ import (
 	"strings"
 )
 
-/*
-const name = `{
-
-  "POSTGRES": {
-    "host": "127.0.0.1",
-    "port": "5432",
-    "db_name": "postgres",
-    "user": "postgres",
-    "password": "mysecretpassword"
-  },
-  "POLICY": {
-    "batch_size": "50",
-    "retention": 4
-  }
-}
-*/
-
-//Config config onject
+//Config config oblject
 type Config struct {
 	config map[string]interface{}
 }
@@ -58,6 +41,8 @@ func (k *Config) Load(path ...string) error {
 	}
 }
 
+//ParseJson parse json file to map[string]interface
+//accept path to json file and return error
 func (k *Config) ParseJson(b []byte) error {
 	err := json.NewDecoder(strings.NewReader(string(b))).Decode(&k.config)
 	if err != nil {
@@ -65,6 +50,9 @@ func (k *Config) ParseJson(b []byte) error {
 	}
 	return nil
 }
+
+//ParseYaml parse json file to map[string]interface
+//accept path to yaml file and return error
 func (k *Config) ParseYaml(b []byte) error {
 	err := yaml.NewDecoder(strings.NewReader(string(b))).Decode(&k.config)
 	if err != nil {
@@ -82,10 +70,14 @@ func (k *Config) GetValueString(key string) string {
 	return k.getValueFromConfig(key)
 }
 
+//getValueFromEnv return env value by key
+// accept key and return value
 func (k *Config) getValueFromEnv(key string) string {
 	return os.Getenv(key)
 }
 
+//getValueFromConfig return value by key from config file
+// accept key and return value
 func (k *Config) getValueFromConfig(key string) string {
 	keys := strings.Split(key, ".")
 	tempMap := k.config
