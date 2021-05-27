@@ -14,7 +14,17 @@
 - environment variables
 - ini
 
-### usage example
+### usage 
+json config example:
+
+```
+{
+  "SERVER": {
+    "host": "127.0.0.1",
+    "port": "8080"
+}
+```
+code example :
 ```
 func readConfig() error{
     c := New()
@@ -24,6 +34,6 @@ func readConfig() error{
        return err
      }	 
      
-    fmt.Print(c.GetValueString("SERVER.host"))
+    fmt.Print(c.GetStringValue("SERVER.host"))
 }
 ```
