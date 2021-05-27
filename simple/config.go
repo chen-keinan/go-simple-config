@@ -115,9 +115,9 @@ func (k *Config) scanProperties(scanner *bufio.Scanner) error {
 	return nil
 }
 
-//GetValueString return config value by key
+//GetStringValue return config value by key
 //accept key and return value
-func (k *Config) GetValueString(key string) string {
+func (k *Config) GetStringValue(key string) string {
 	if v := os.Getenv(key); len(v) > 0 {
 		return v
 	}
