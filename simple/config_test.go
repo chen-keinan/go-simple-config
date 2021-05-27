@@ -6,6 +6,11 @@ import (
 	"testing"
 )
 
+func TestNew(t *testing.T) {
+	c := New()
+	assert.Equal(t, len(c.config), 0)
+}
+
 func TestConfig_GetValueString(t *testing.T) {
 	c := New()
 	err := c.Load("./fixture/config.default.json")
@@ -21,6 +26,25 @@ func TestConfig_LoadJson(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, c.GetValueString("SERVER.host"), "127.0.0.1")
 }
+
+func TestConfig_LoadJsonError(t *testing.T) {
+	c := New()
+	err := c.Load("./fixture/config.default1.json")
+	assert.Error(t, err)
+}
+
+func TestConfig_LoadJsonBadJson(t *testing.T) {
+	c := New()
+	err := c.Load("./fixture/bad.config.default.json")
+	assert.Error(t, err)
+}
+
+func TestConfig_LoadJsonBadYaml(t *testing.T) {
+	c := New()
+	err := c.Load("./fixture/bad.config.default.yaml")
+	assert.Error(t, err)
+}
+
 func TestConfig_LoadYaml(t *testing.T) {
 	c := New()
 	err := c.Load("./fixture/config.default.yaml")
@@ -37,6 +61,13 @@ func TestConfig_LoadYml(t *testing.T) {
 func TestConfig_LoadProperties(t *testing.T) {
 	c := New()
 	err := c.Load("./fixture/config.default.properties")
+	assert.NoError(t, err)
+	assert.Equal(t, c.GetValueString("SERVER.host"), "127.0.0.1")
+}
+
+func TestConfig_LoadIni(t *testing.T) {
+	c := New()
+	err := c.Load("./fixture/config.default.ini")
 	assert.NoError(t, err)
 	assert.Equal(t, c.GetValueString("SERVER.host"), "127.0.0.1")
 }

@@ -38,7 +38,7 @@ func (k *Config) Load(path ...string) error {
 		return k.ParseYaml(b)
 	case ".json":
 		return k.ParseJSON(b)
-	case ".properties":
+	case ".properties", ".ini":
 		return k.ParseProperties(b)
 	default:
 		return k.ParseJSON(b)
@@ -69,8 +69,22 @@ func (k *Config) ParseYaml(b []byte) error {
 //accept path to properties file and return error
 func (k *Config) ParseProperties(b []byte) error {
 	scanner := bufio.NewScanner(strings.NewReader(string(b)))
+	err := k.scanProperties(scanner)
+	if err != nil || scanner.Err() != nil {
+		return err
+	}
+	return nil
+}
+
+//scanProperties scan properties file
+// accept file scanner and return error
+// nolint gocyclo
+func (k *Config) scanProperties(scanner *bufio.Scanner) error {
 	for scanner.Scan() {
-		line := scanner.Text()
+		line := strings.TrimSpace(scanner.Text())
+		if len(line) == 0 || (line[0] == '[' && line[len(line)-1] == ']') {
+			continue
+		}
 		if equal := strings.Index(line, "="); equal >= 0 {
 			if key := strings.TrimSpace(line[:equal]); len(key) > 0 {
 				value := ""
@@ -97,9 +111,6 @@ func (k *Config) ParseProperties(b []byte) error {
 				r[fkey] = value
 			}
 		}
-	}
-	if err := scanner.Err(); err != nil {
-		return err
 	}
 	return nil
 }

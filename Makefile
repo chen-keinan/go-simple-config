@@ -17,6 +17,6 @@ lint:
 tidy:
 	$(GOMOD) tidy -v
 test:
-	$(GOTEST) ./...
+	$(GOTEST) ./... -coverprofile coverage.md fmt
 
 .PHONY: install-req fmt lint tidy test imports
