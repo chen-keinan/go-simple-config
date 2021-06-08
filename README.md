@@ -24,6 +24,29 @@ json config example:
     "port": "8080"
 }
 ```
+yaml config example:
+
+```
+---
+SERVER:
+  host: 127.0.0.1
+  port: '8080'
+```
+
+properties config example:
+
+```
+SERVER.host=127.0.0.1
+SERVER.port=8080
+```
+
+env. variable config example:
+
+```
+export SERVER.host="127.0.0.1"
+export SERVER.port="8080"
+```
+
 code example :
 ```
 func readConfig() error{
