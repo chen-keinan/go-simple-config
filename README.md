@@ -43,8 +43,8 @@ SERVER.port=8080
 env. variable config example:
 
 ```
-export SERVER.host="127.0.0.1"
-export SERVER.port="8080"
+export SERVER_HOST="127.0.0.1"
+export SERVER_PORT="8080"
 ```
 
 code example :
