@@ -30,6 +30,20 @@ func TestConfig_GetValueString(t *testing.T) {
 	}
 }
 
+func TestConfig_GetValueStringFlatJson(t *testing.T) {
+	c := New()
+	err := c.Load("./fixture/config.default.flat.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if value := c.GetStringValue("host"); value != "127.0.0.1" {
+		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
+	}
+	if value := c.GetStringValue("port"); value != "8080" {
+		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "8080"))
+	}
+}
+
 func TestConfig_LoadJson(t *testing.T) {
 	c := New()
 	err := c.Load("./fixture/config.default.json")
