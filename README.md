@@ -6,7 +6,7 @@
 > Go Simple config is an open source configuration lib for storing and accessing configuration data with minimal dependencies
 >
 
-### supported configuration files:
+## supported configuration files:
 
 - yaml
 - json
@@ -14,8 +14,8 @@
 - environment variables
 - ini
 
-### usage 
-json config example:
+## usage 
+### json config example:
 
 ```
 {
@@ -24,7 +24,7 @@ json config example:
     "port": "8080"
 }
 ```
-yaml config example:
+### yaml config example:
 
 ```
 ---
@@ -33,21 +33,21 @@ SERVER:
   port: '8080'
 ```
 
-properties config example:
+### properties config example:
 
 ```
 SERVER.host=127.0.0.1
 SERVER.port=8080
 ```
 
-env. variable config example:
+### env. variable config example:
 
 ```
 export SERVER_HOST="127.0.0.1"
 export SERVER_PORT="8080"
 ```
 
-code example :
+### code example :
 ```
 func readConfig() error{
     c := New()
