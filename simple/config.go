@@ -131,16 +131,16 @@ func (k *Config) getValueFromConfig(key string) string {
 	tempMap := k.config
 	for _, ck := range keys {
 		if v, ok := tempMap[ck]; ok {
-			switch v.(type) {
+			switch t := v.(type) {
 			case map[string]interface{}:
-				tempMap = v.(map[string]interface{})
+				tempMap = t
 				continue
 			case string:
-				return v.(string)
+				return t
 			case float64:
-				return strconv.Itoa(int(v.(float64)))
+				return strconv.Itoa(int(t))
 			case bool:
-				return strconv.FormatBool(v.(bool))
+				return strconv.FormatBool(t)
 			}
 		}
 	}

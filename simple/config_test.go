@@ -13,113 +13,48 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestConfig_GetValueString(t *testing.T) {
+func TestConfigTable(t *testing.T) {
+	tests := []struct {
+		name        string
+		configPath  string
+		key         string
+		expectError bool
+		want        string
+	}{
+		{name: "get value json good ip", configPath: "./fixture/config.default.json", key: "SERVER.host", expectError: false, want: "127.0.0.1"},
+		{name: "get value json good retention", configPath: "./fixture/config.default.json", key: "PARAMS.retention", expectError: false, want: "4"},
+		{name: "get value json good test", configPath: "./fixture/config.default.json", key: "PARAMS.test", expectError: false, want: "true"},
+		{name: "get value json good flat ip", configPath: "./fixture/config.default.flat.json", key: "host", expectError: false, want: "127.0.0.1"},
+		{name: "get value json good flat port", configPath: "./fixture/config.default.flat.json", key: "port", expectError: false, want: "8080"},
+		{name: "get value json file not exist", configPath: "./fixture/config.default1.json", key: "SERVER.host", expectError: true, want: "127.0.0.1"},
+		{name: "get value json bad", configPath: "./fixture/bad.config.default.json", key: "SERVER.host", expectError: true, want: "127.0.0.1"},
+		{name: "get value yaml good", configPath: "./fixture/config.default.yaml", key: "SERVER.host", expectError: false, want: "127.0.0.1"},
+		{name: "get value yml good", configPath: "./fixture/config.default.yml", key: "SERVER.host", expectError: false, want: "127.0.0.1"},
+		{name: "get value properties good", configPath: "./fixture/config.default.properties", key: "SERVER.host", expectError: false, want: "127.0.0.1"},
+		{name: "get value properties good", configPath: "./fixture/config.default.ini", key: "SERVER.host", expectError: false, want: "127.0.0.1"},
+		{name: "get value yaml bad", configPath: "bad.config.default.yaml", key: "SERVER.host", expectError: true, want: "127.0.0.1"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetConfigValue(tt.configPath, tt.key)
+			if (err == nil && tt.expectError) || (err != nil && !tt.expectError) {
+				t.Errorf("GetConfigValue() = %v", err)
+				return
+			}
+			if got != tt.want && !tt.expectError {
+				t.Errorf("GetConfigValue() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func GetConfigValue(configPath string, key string) (string, error) {
 	c := New()
-	err := c.Load("./fixture/config.default.json")
+	err := c.Load(configPath)
 	if err != nil {
-		t.Fatal(err)
+		return "", err
 	}
-	if value := c.GetStringValue("SERVER.host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
-	}
-	if value := c.GetStringValue("PARAMS.retention"); value != "4" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "4"))
-	}
-	if value := c.GetStringValue("PARAMS.test"); value != "true" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "true"))
-	}
-}
-
-func TestConfig_GetValueStringFlatJson(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/config.default.flat.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if value := c.GetStringValue("host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
-	}
-	if value := c.GetStringValue("port"); value != "8080" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "8080"))
-	}
-}
-
-func TestConfig_LoadJson(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/config.default.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if value := c.GetStringValue("SERVER.host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
-	}
-}
-
-func TestConfig_LoadJsonError(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/config.default1.json")
-	if err == nil {
-		t.Fatal(err)
-	}
-}
-
-func TestConfig_LoadJsonBadJson(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/bad.config.default.json")
-	if err == nil {
-		t.Fatal(err)
-	}
-}
-
-func TestConfig_LoadJsonBadYaml(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/bad.config.default.yaml")
-	if err == nil {
-		t.Fatal(err)
-	}
-}
-
-func TestConfig_LoadYaml(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/config.default.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if value := c.GetStringValue("SERVER.host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
-	}
-}
-func TestConfig_LoadYml(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/config.default.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if value := c.GetStringValue("SERVER.host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
-	}
-}
-
-func TestConfig_LoadProperties(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/config.default.properties")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if value := c.GetStringValue("SERVER.host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
-	}
-}
-
-func TestConfig_LoadIni(t *testing.T) {
-	c := New()
-	err := c.Load("./fixture/config.default.ini")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if value := c.GetStringValue("SERVER.host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
-	}
+	return c.GetStringValue(key), nil
 }
 
 func TestConfig_LoadEnv(t *testing.T) {
