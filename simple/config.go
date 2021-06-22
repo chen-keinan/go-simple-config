@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-//Config config oblject
+//Config config object
 type Config struct {
 	config map[string]interface{}
 }
