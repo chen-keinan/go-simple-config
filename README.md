@@ -3,10 +3,19 @@
 <img src="./pkg/img/coverage_badge.png" alt="test coverage badge">
 [![Gitter](https://badges.gitter.im/beacon-sec/community.svg)](https://gitter.im/beacon-sec/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 # go-simple-config
-> Go Simple config is an open source configuration lib for storing and accessing configuration data with minimal dependencies
->
+Go Simple config is an open source configuration lib for storing and accessing configuration data with minimal dependencies
 
-## supported configuration files:
+
+* [Installation](#installation)
+* [Supported Configuration Files](#supported-configuration-files)
+* [Usage](#usage)
+
+## Installation
+```
+go get github.com/chen-keinan/go-simple-config
+```
+
+## Supported configuration files:
 
 - yaml
 - json
@@ -14,7 +23,7 @@
 - environment variables
 - ini
 
-## usage 
+## Usage 
 ### json config example:
 
 ```
