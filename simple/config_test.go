@@ -72,6 +72,13 @@ func TestIntConfigTable(t *testing.T) {
 	}
 }
 
+func TestFileFormatNotSupported(t *testing.T) {
+	_, err := GetConfigStringValue("./fixture/config.default.flat.notSupported", "aaa")
+	if err == nil {
+		t.Errorf("file should not be supported")
+	}
+}
+
 func TestFloatConfigTable(t *testing.T) {
 	tests := []struct {
 		name        string

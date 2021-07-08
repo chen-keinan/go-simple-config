@@ -40,9 +40,8 @@ func (k *Config) Load(path ...string) error {
 		return k.ParseJSON(b)
 	case ".properties", ".ini":
 		return k.ParseProperties(b)
-	default:
-		return k.ParseJSON(b)
 	}
+	return fmt.Errorf("file format %s is not supported", fileExtension)
 }
 
 //ParseJSON parse json file to map[string]interface
