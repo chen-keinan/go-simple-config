@@ -31,6 +31,7 @@ func TestStringConfigTable(t *testing.T) {
 		{name: "get value properties good", configPath: "./fixture/config.default.properties", key: "SERVER.host", expectError: false, want: "127.0.0.1"},
 		{name: "get value properties good", configPath: "./fixture/config.default.ini", key: "SERVER.host", expectError: false, want: "127.0.0.1"},
 		{name: "get value yaml bad", configPath: "bad.config.default.yaml", key: "SERVER.host", expectError: true, want: "127.0.0.1"},
+		{name: "get non string value", configPath: "./fixture/config.default.json", key: "PARAMS.test", expectError: false, want: ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
