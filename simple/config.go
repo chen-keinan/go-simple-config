@@ -114,7 +114,7 @@ func (k *Config) scanProperties(scanner *bufio.Scanner) error {
 	return nil
 }
 
-//GetStringValue return config value by key
+//GetStringValue return string config value by key
 //accept key and return value
 func (k *Config) GetStringValue(key string) string {
 	if v := os.Getenv(key); len(v) > 0 {
@@ -129,7 +129,7 @@ func (k *Config) GetStringValue(key string) string {
 	}
 }
 
-//GetIntValue return config value by key
+//GetIntValue return int config value by key
 //accept key and return value
 func (k *Config) GetIntValue(key string) int {
 	if v := os.Getenv(key); len(v) > 0 {
@@ -148,7 +148,7 @@ func (k *Config) GetIntValue(key string) int {
 	}
 }
 
-//GetFloat64Value return config value by key
+//GetFloat64Value return float config value by key
 //accept key and return value
 func (k *Config) GetFloat64Value(key string) float64 {
 	if v := os.Getenv(key); len(v) > 0 {
@@ -167,7 +167,7 @@ func (k *Config) GetFloat64Value(key string) float64 {
 	}
 }
 
-//GetBoolValue return config value by key
+//GetBoolValue return bool config value by key
 //accept key and return value
 func (k *Config) GetBoolValue(key string) bool {
 	if v := os.Getenv(key); len(v) > 0 {
@@ -186,7 +186,7 @@ func (k *Config) GetBoolValue(key string) bool {
 	}
 }
 
-//GetStringArrayValue return config value by key
+//GetStringArrayValue return array of strings config value by key
 //accept key and return value
 func (k *Config) GetStringArrayValue(key string) []string {
 	value := k.getValueFromConfig(key)
