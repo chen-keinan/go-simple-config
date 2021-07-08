@@ -121,12 +121,93 @@ func (k *Config) GetStringValue(key string) string {
 	if v := os.Getenv(key); len(v) > 0 {
 		return v
 	}
-	return k.getValueFromConfig(key)
+	value := k.getValueFromConfig(key)
+	switch t := value.(type) {
+	case string:
+		return t
+	default:
+		return ""
+	}
+}
+
+//GetIntValue return config value by key
+//accept key and return value
+func (k *Config) GetIntValue(key string) int {
+	if v := os.Getenv(key); len(v) > 0 {
+		val, err := strconv.Atoi(v)
+		if err != nil {
+			return 0
+		}
+		return val
+	}
+	value := k.getValueFromConfig(key)
+	switch t := value.(type) {
+	case float64:
+		return int(t)
+	default:
+		return 0
+	}
+}
+
+//GetFloat64Value return config value by key
+//accept key and return value
+func (k *Config) GetFloat64Value(key string) float64 {
+	if v := os.Getenv(key); len(v) > 0 {
+		val, err := strconv.ParseFloat(v, 10)
+		if err != nil {
+			return 0
+		}
+		return val
+	}
+	value := k.getValueFromConfig(key)
+	switch t := value.(type) {
+	case float64:
+		return t
+	default:
+		return 0
+	}
+}
+
+//GetBoolValue return config value by key
+//accept key and return value
+func (k *Config) GetBoolValue(key string) bool {
+	if v := os.Getenv(key); len(v) > 0 {
+		val, err := strconv.ParseBool(v)
+		if err != nil {
+			return false
+		}
+		return val
+	}
+	value := k.getValueFromConfig(key)
+	switch t := value.(type) {
+	case bool:
+		return t
+	default:
+		return false
+	}
+}
+
+//GetStringArrayValue return config value by key
+//accept key and return value
+func (k *Config) GetStringArrayValue(key string) []string {
+	value := k.getValueFromConfig(key)
+	switch t := value.(type) {
+	case []interface{}:
+		arr := make([]string, 0)
+		for _, i := range t {
+			if v, ok := i.(string); ok {
+				arr = append(arr, v)
+			}
+		}
+		return arr
+	default:
+		return nil
+	}
 }
 
 //getValueFromConfig return value by key from config file
 // accept key and return value
-func (k *Config) getValueFromConfig(key string) string {
+func (k *Config) getValueFromConfig(key string) interface{} {
 	keys := strings.Split(key, ".")
 	tempMap := k.config
 	for _, ck := range keys {
@@ -135,12 +216,8 @@ func (k *Config) getValueFromConfig(key string) string {
 			case map[string]interface{}:
 				tempMap = t
 				continue
-			case string:
+			default:
 				return t
-			case float64:
-				return strconv.Itoa(int(t))
-			case bool:
-				return strconv.FormatBool(t)
 			}
 		}
 	}

@@ -9,6 +9,8 @@
   "PARAMS": {
     "batch_size": "50",
     "retention": 4,
-    "test": true
+    "partial": 4.0,
+    "test": true,
+    "keys": ["a","b"]
   }
 }
