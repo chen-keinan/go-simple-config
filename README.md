@@ -3,6 +3,7 @@
 <img src="./pkg/img/coverage_badge.png" alt="test coverage badge">
 [![Gitter](https://badges.gitter.im/beacon-sec/community.svg)](https://gitter.im/beacon-sec/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+<br><img src="./pkg/img/simple-config.png" width="300" alt="simple-config.png logo"><br>
 # go-simple-config
 
 Go Simple config is an open source configuration lib for storing and accessing configuration data with minimal
