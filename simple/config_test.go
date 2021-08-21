@@ -198,17 +198,34 @@ func GetConfigBoolValue(configPath string, key string) (bool, error) {
 	return c.GetBoolValue(key), nil
 }
 
-func TestConfig_LoadEnv(t *testing.T) {
-	err := os.Setenv("SERVER.host", "127.0.0.1")
-	if err != nil {
-		t.Fatal(err)
+func TestEnvVariableTable(t *testing.T) {
+	tests := []struct {
+		name       string
+		configPath string
+		key        string
+		envVarKey  string
+		envVarVal  string
+		want       string
+	}{
+		{name: "get value env with dot", configPath: "./fixture/config.default.json", key: "PARAMS.batch_size", envVarKey: "PARAMS_BATCH_SIZE", envVarVal: "34", want: "34"},
+		{name: "get value env with camel case", configPath: "./fixture/config.default.json", key: "testKey", envVarKey: "TEST_KEY", envVarVal: "34", want: "34"},
+		{name: "get value env with simple", configPath: "./fixture/config.default.json", key: "test", envVarKey: "TEST", envVarVal: "34", want: "34"},
+		{name: "get value env with lower case ", configPath: "./fixture/config.default.json", key: "test", envVarKey: "test", envVarVal: "34", want: "34"},
+		{name: "get value env ", configPath: "./fixture/config.default.json", key: "SERVER.host", envVarKey: "SERVER_HOST", envVarVal: "127.0.0.1", want: "127.0.0.1"},
 	}
-	c := New()
-	err = c.Load()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if value := c.GetStringValue("SERVER.host"); value != "127.0.0.1" {
-		t.Fatal(fmt.Sprintf("%s not equal to %s", value, "127.0.0.1"))
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := os.Setenv(tt.envVarKey, tt.envVarVal)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, err := GetConfigStringValue(tt.configPath, tt.key)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(got) != len(tt.want) {
+				t.Errorf("TestEnvVariableTable() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }

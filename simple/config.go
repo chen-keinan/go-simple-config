@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -117,7 +118,7 @@ func (k *Config) scanProperties(scanner *bufio.Scanner) error {
 //GetStringValue return string config value by key
 //accept key and return value
 func (k *Config) GetStringValue(key string) string {
-	if v := os.Getenv(key); len(v) > 0 {
+	if v := getEnv(key); len(v) > 0 {
 		return v
 	}
 	value := k.getValueFromConfig(key)
@@ -132,7 +133,7 @@ func (k *Config) GetStringValue(key string) string {
 //GetIntValue return int config value by key
 //accept key and return value
 func (k *Config) GetIntValue(key string) int {
-	if v := os.Getenv(key); len(v) > 0 {
+	if v := getEnv(key); len(v) > 0 {
 		val, err := strconv.Atoi(v)
 		if err != nil {
 			return 0
@@ -151,7 +152,7 @@ func (k *Config) GetIntValue(key string) int {
 //GetFloat64Value return float config value by key
 //accept key and return value
 func (k *Config) GetFloat64Value(key string) float64 {
-	if v := os.Getenv(key); len(v) > 0 {
+	if v := getEnv(key); len(v) > 0 {
 		val, err := strconv.ParseFloat(v, 10)
 		if err != nil {
 			return 0
@@ -170,7 +171,7 @@ func (k *Config) GetFloat64Value(key string) float64 {
 //GetBoolValue return bool config value by key
 //accept key and return value
 func (k *Config) GetBoolValue(key string) bool {
-	if v := os.Getenv(key); len(v) > 0 {
+	if v := getEnv(key); len(v) > 0 {
 		val, err := strconv.ParseBool(v)
 		if err != nil {
 			return false
@@ -221,4 +222,30 @@ func (k *Config) getValueFromConfig(key string) interface{} {
 		}
 	}
 	return ""
+}
+
+func getEnv(key string) string {
+	key = toSnakeCase(key)
+	// replace dot with underscore as env. variable cannot be with dot
+	if strings.Contains(key, ".") {
+		key = strings.ReplaceAll(key, ".", "_")
+	}
+	// loo for key with upper case as env. variable should be with uppercase
+	vUpper := os.Getenv(strings.ToUpper(key))
+	if len(vUpper) > 0 {
+		return vUpper
+	}
+	if v := os.Getenv(key); len(v) > 0 {
+		return vUpper
+	}
+	return ""
+}
+
+var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+
+func toSnakeCase(str string) string {
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.ToLower(snake)
 }

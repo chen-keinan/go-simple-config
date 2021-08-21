@@ -11,6 +11,11 @@
     "retention": 4,
     "partial": 4.0,
     "test": true,
-    "keys": ["a","b"]
-  }
+    "keys": [
+      "a",
+      "b"
+    ]
+  },
+  "testKey": "12",
+  "test": "13"
 }
