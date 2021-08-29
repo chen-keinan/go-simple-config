@@ -15,7 +15,7 @@ dependencies
 
 ## Installation
 
-```
+```shell
 go get github.com/chen-keinan/go-simple-config
 ```
 
@@ -31,7 +31,7 @@ go get github.com/chen-keinan/go-simple-config
 
 ### json config example:
 
-```
+```json
 {
   "SERVER": {
     "host": "127.0.0.1",
@@ -41,7 +41,7 @@ go get github.com/chen-keinan/go-simple-config
 
 ### yaml config example:
 
-```
+```yaml
 ---
 SERVER:
   host: 127.0.0.1
@@ -50,21 +50,21 @@ SERVER:
 
 ### properties config example:
 
-```
+```json
 SERVER.host=127.0.0.1
 SERVER.port=8080
 ```
 
 ### env. variable config example:
 
-```
+```shell
 export SERVER_HOST="127.0.0.1"
 export SERVER_PORT="8080"
 ```
 
 ### json config ,full example :
 
-```
+```go
 func readConfig() error{
     c := New()
     err := c.Load("config.json")
